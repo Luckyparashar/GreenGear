@@ -1,0 +1,47 @@
+server:
+  port: 9191
+
+spring:
+  application:
+    name: ApiGatewa
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+          routes:
+          - id: user-service
+            uri: lb://GreanGearAuth
+            predicates:
+              - Path=/user/{users}/**
+            filters:
+              - AuthenticationFilter
+
+          - id: equipment-service
+            uri: lb://GreanGearEquipement
+            predicates:
+              - Path=/ms2/{category}/**
+            filters:
+              - AuthenticationFilter
+
+          - id: equipment-booking
+            uri: lb://GreanGearBooking
+            predicates:
+              - Path=/ms3/booking/**
+            filters:
+              - AuthenticationFilter
+
+          - id: equipment-review
+            uri: lb://GreanGearReview
+            predicates:
+              - Path=/ms4/review/**
+            filters:
+              - AuthenticationFilter
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
